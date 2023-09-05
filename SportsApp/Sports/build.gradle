@@ -78,7 +78,8 @@ task compileABLApp(type: ABLCompile){
             connectionParameters = "-1"
         }
 
-    } else if (STAGE_ENVIRONMENT == "prod"){
+    } else {
+        // STAGE_ENVIRONMENT == "prod" / "staging"
         dbConnection {
             parameterFile='conf/startup.pf'
         }
