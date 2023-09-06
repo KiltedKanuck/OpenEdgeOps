@@ -1,5 +1,5 @@
 name: OpenEdgeOps
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+run-name: ${{ github.actor }} is compiling our Sample App 🚀
 on: [push]
 jobs:
   compile:
@@ -7,7 +7,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - run: cd SportsApp/Sports
       - run: ./gradlew -DSTAGE_ENVIRONMENT=staging clean build
+        working-directory: ./SportsApp/Sports        
+      
   
     
