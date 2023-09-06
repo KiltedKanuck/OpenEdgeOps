@@ -10,7 +10,7 @@ jobs:
       - run: sh gradlew clean build
         working-directory: ./SportsApp/Sports    
       - name: upload zip file to nexus
-        run: curl -v -k -u admin:${{secrets.DOCKER_PWD}} --upload-file ./build/distributions/Sports.oear https://ec2-54-80-142-101.compute-1.amazonaws.com:8443/repository/PugChallengeMaven/com/progess/sportsapp/1.0.0/Sports-1.0.0.oear
+        run: curl -v -k -u admin:${{secrets.DOCKER_PWD}} --upload-file ./build/distributions/Sports.oear https://ec2-54-80-142-101.compute-1.amazonaws.com:8443/repository/PugChallengeMaven/com/progess/sportsapp/1.0.0/sportsapp-1.0.0.oear
         working-directory: ./SportsApp/Sports
 
 
