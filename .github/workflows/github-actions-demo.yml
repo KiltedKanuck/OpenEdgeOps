@@ -5,7 +5,6 @@ jobs:
   compile:
     name: OpenEdge Compile job
     runs-on: self-hosted
-    container: OpenEdge-12.8.0-runner
     steps:
       - uses: actions/checkout@v2
   
