@@ -9,17 +9,10 @@ jobs:
       - uses: actions/checkout@v2
       - run: sh gradlew clean build
         working-directory: ./SportsApp/Sports    
-      - name: Nexus Repo Publish
-        uses: sonatype-nexus-community/nexus-repo-github-action@master
-        with:
-          serverUrl: https://ec2-54-80-142-101.compute-1.amazonaws.com:8443
-          username: admin
-          password: Progress2023!
-          format: maven2
-          repository: PugChallengeMaven
-          coordinates: groupId=com.progress artifactId=sportsapp version=1.0.0
-          assets: extension=oear
-          filename: ./build/distribustion/Sports.oear      
+      - name: upload zip file to nexus
+        run: curl -v -k -u admin:${{secrets.DOCKER_PWD}} --upload-file ./build/distribustion/Sports.oear https://ec2-54-80-142-101.compute-1.amazonaws.com:8443/repository/PugChallengeMaven/com/progess/sportsapp/1.0.0/Sports-1.0.0.oear
+
+
       
   
     
