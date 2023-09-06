@@ -67,7 +67,7 @@ task createSports2020(type: CreateDB){
 
 task compileABLApp(type: ABLCompile){
     source "AppServer"
-    propath "AppServer","${dlcHome}/tty/OpenEdge.BusinessLogic.pl"
+    propath "AppServer"
     include "**/*.cls"
     include "**/*.p"
     rcodeDir = "${buildDir}/rcode/AppServer"
