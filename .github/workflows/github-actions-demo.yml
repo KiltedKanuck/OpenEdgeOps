@@ -7,7 +7,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - run: sh gradlew -DSTAGE_ENVIRONMENT=staging clean build
+      - run: sh gradlew clean build
         working-directory: ./SportsApp/Sports        
       
   
