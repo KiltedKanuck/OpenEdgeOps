@@ -6,12 +6,38 @@ jobs:
     name: OpenEdge Compile job
     runs-on: self-hosted
     steps:
+      - name: Clean-up
+        run: rm -Rf *
       - uses: actions/checkout@v2
       - run: sh gradlew clean build
         working-directory: ./SportsApp    
       - name: upload zip file to nexus
         run: curl -v -k -u admin:${{secrets.DOCKER_PWD}} --upload-file ./build/distributions/sportsApp.tar.gz https://ec2-54-80-142-101.compute-1.amazonaws.com:8443/repository/PugChallengeMaven/com/progess/sportsapp/1.0.0/sportsapp-1.0.0.tar.gz
         working-directory: ./SportsApp
+  deploy:
+    name: Sample App Deploy
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: /opt/sampleapp
+    steps:
+      - name: Clean-up
+        run: rm -Rf *
+      - name: Download the application artifact
+        run: pwd && wget https://ec2-54-80-142-101.compute-1.amazonaws.com:8443/repository/PugChallengeMaven/com/progess/sportsapp/1.0.0/sportsapp-1.0.0.tar.gz --no-check-certificate
+      - name: Extract the artifact
+        run: tar -zxf sportsapp-1.0.0.tar.gz
+      - run: mkdir ./deploy/license  
+      - name: Download the OpenEdge License file
+        run: wget -cO - https://ec2-54-80-142-101.compute-1.amazonaws.com:8443/repository/PugChallengeMaven/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > ./deploy/license/progress.cfg --no-check-certificate
+      - name: Undeploy previous version of Sample App
+        run: sudo sh undeploy.sh
+        working-directory: /opt/sampleapp/deploy
+      - name: Deploy new version of Sample App
+        run: sudo sh deploy.sh
+        working-directory: /opt/sampleapp/deploy
+
+      
 
 
       
