@@ -4,7 +4,7 @@
 
 $(function () {
     'use strict';
-    var serviceURI = "https://<Place_IP_Address_of_Docker_Host>:8811/Sports";
+    var serviceURI = "https://localhost:8811/Sports";
     var catalogURI = serviceURI + "/static/SportsService.json";
 
     function createGrid() {
