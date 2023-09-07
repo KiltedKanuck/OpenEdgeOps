@@ -32,10 +32,10 @@ jobs:
         run: wget -cO - https://ec2-54-80-142-101.compute-1.amazonaws.com:8443/repository/PugChallengeMaven/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > ./deploy/license/progress.cfg --no-check-certificate
       - name: Undeploy previous version of Sample App
         run: sudo sh undeploy.sh
-        working-directory: ./deploy
+        working-directory: /opt/sampleapp/deploy
       - name: Deploy new version of Sample App
         run: sudo sh deploy.sh
-        working-directory: ./deploy
+        working-directory: /opt/sampleapp/deploy
 
       
 
