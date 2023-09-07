@@ -1,7 +1,7 @@
 version: "3.6"
 services:
     oedbmachine:
-      image: oedb:latest
+      image: ec2-54-80-142-101.compute-1.amazonaws.com:9443/openedge-db:12.8.0
       ports:
         - "7654:7654"
         - "7664-7684:7664-7684"
@@ -24,7 +24,7 @@ services:
         volumes:
           - app_dc:/deploy-staging/artifacts
     pasoeinstance:
-        image: progresssoftware/prgs-pasoe:12.8.0
+        image: ec2-54-80-142-101.compute-1.amazonaws.com:9443/openedge-pasoe:12.8.0
         depends_on: 
           - jdk
           - ablapp
