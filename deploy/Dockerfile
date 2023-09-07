@@ -6,7 +6,7 @@ ARG ROOT_FOLDER=/deploy-staging
 ARG MANIFEST_VERSION=1.0
 
 # Copy archive file
-COPY ./output/package-output/instance ${ROOT_FOLDER}/artifacts/
+COPY ./ablapps/ ${ROOT_FOLDER}/artifacts/ablapps
 
 # Create "META-INF/MANIFEST.MF" file
 RUN mkdir ${ROOT_FOLDER}/META-INF

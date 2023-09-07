@@ -57,21 +57,17 @@ elif [ ! -x "${JAVA_HOME}/bin/java" ]; then echo "JAVA not found at ${JAVA_HOME}
 # Validate if INSTANCE_NAME is set
 if [ -z ${INSTANCE_NAME} ]; then echo "INSTANCE_NAME is not set"; exit 1; fi
 
-# Validate if <INSTANCE_NAME>.zip is provided
-if [ ! -s "/deploy/artifacts/${INSTANCE_NAME}.tar.gz" ]; then echo "'${INSTANCE_NAME}.tar.gz' is not provided at '/deploy/artifacts'"; exit 1; fi
+# Validate if ABL App archive is provided
+if [ ! -s "/deploy/artifacts/ablapps/Sports.oear" ]; then echo "'Sports.oear' is not provided at '/deploy/artifacts/ablapps'"; exit 1; fi
 
 ## Create directory for additional log files 
 LOG_PATH=/psc/wrk/logs
 mkdir -p ${LOG_PATH}
 
-## extract instance archive
-cd ${WRKDIR}
-mkdir -p tmp
-tar -xzf /deploy/artifacts/${INSTANCE_NAME}.tar.gz -C tmp
-
 ## Start PASOE server
+cd ${WRKDIR}
 ${DLC}/bin/pasman create -v -Z pas -u admin:admin ${INSTANCE_NAME}
-${INSTANCE_NAME}/bin/tcman.sh import -v tmp/ablapps/Sports.oear
+${INSTANCE_NAME}/bin/tcman.sh import -v /deploy/artifacts/ablapps/Sports.oear
 ${INSTANCE_NAME}/bin/tcman.sh start
 
 cd /deploy/scripts

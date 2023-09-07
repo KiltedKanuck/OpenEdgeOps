@@ -1,0 +1,56 @@
+version: "3.6"
+services:
+    oedbmachine:
+      image: oedb:latest
+      ports:
+        - "7654:7654"
+        - "7664-7684:7664-7684"
+      environment:
+        - DB_BROKER_PORT=7654
+        - DB_MINPORT=7664 
+        - DB_MAXPORT=7684
+    web:
+      image: nginx
+      ports:
+      - "8080:80"
+      volumes:
+      - ./../SportsApp/webui:/usr/share/nginx/html:ro
+    jdk:
+        image: eclipse-temurin:17.0.3_7-jdk-centos7
+        volumes:
+          - jdk_dc:/opt/java/openjdk
+    ablapp:
+        image: sports:latest
+        volumes:
+          - app_dc:/deploy-staging/artifacts
+    pasoeinstance:
+        image: progresssoftware/prgs-pasoe:12.8.0
+        depends_on: 
+          - jdk
+          - ablapp
+        environment:
+          - FLUENTBIT_LOGGING=true
+          - APP_NAME=sports
+          - INSTANCE_NAME=oepas1
+        ports:
+          - "8811:8811"
+        container_name: "oepas1_pasoeinstance_dc"
+        command: ["/bin/sh", "-c", "sh /deploy/scripts/startServer.sh"]
+        volumes:
+          - type: volume
+            source: jdk_dc
+            target: /usr/java
+            volume:
+              nocopy: true
+          - type: volume
+            source: app_dc
+            target: /deploy/artifacts
+            volume:
+              nocopy: true
+          - ./license/progress.cfg:/psc/dlc/progress.cfg
+          - ./conf/runtime.properties:/deploy/scripts/config/runtime.properties
+          - ./conf/logging:/fluentbit-tlr
+          - ./scripts/startServer.sh:/deploy/scripts/startServer.sh
+volumes:
+    jdk_dc:
+    app_dc:
