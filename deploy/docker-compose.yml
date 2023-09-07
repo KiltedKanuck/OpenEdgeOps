@@ -48,7 +48,7 @@ services:
             volume:
               nocopy: true
           - ./license/progress.cfg:/psc/dlc/progress.cfg
-          - ./conf/runtime.properties:/deploy/scripts/config/runtime.properties
+          # - ./conf/runtime.properties:/deploy/scripts/config/runtime.properties
           - ./conf/logging:/fluentbit-tlr
           - ./scripts/startServer.sh:/deploy/scripts/startServer.sh
 volumes:
