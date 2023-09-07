@@ -8,10 +8,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: sh gradlew clean build
-        working-directory: ./SportsApp/Sports    
+        working-directory: ./SportsApp    
       - name: upload zip file to nexus
         run: curl -v -k -u admin:${{secrets.DOCKER_PWD}} --upload-file ./build/distributions/sportsApp.tar.gz https://ec2-54-80-142-101.compute-1.amazonaws.com:8443/repository/PugChallengeMaven/com/progess/sportsapp/1.0.0/sportsapp-1.0.0.tar.gz
-        working-directory: ./SportsApp/Sports
+        working-directory: ./SportsApp
 
 
       
