@@ -14,7 +14,7 @@ services:
       ports:
       - "8080:80"
       volumes:
-      - ./../SportsApp/webui:/usr/share/nginx/html:ro
+      - ./../webui:/usr/share/nginx/html:ro
     jdk:
         image: eclipse-temurin:17.0.3_7-jdk-centos7
         volumes:
@@ -49,7 +49,7 @@ services:
               nocopy: true
           - ./license/progress.cfg:/psc/dlc/progress.cfg
           # - ./conf/runtime.properties:/deploy/scripts/config/runtime.properties
-          - ./conf/logging:/fluentbit-tlr
+          # - ./conf/logging:/fluentbit-tlr
           - ./scripts/startServer.sh:/deploy/scripts/startServer.sh
 volumes:
     jdk_dc:

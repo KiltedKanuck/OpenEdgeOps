@@ -29,7 +29,7 @@ task compileWebApp(type: ABLCompile){
 
 task packageWebApp(type: OEWar){
     webAppName = "Sports"
-    projectLocation = project.rootDir
+    projectLocation = project.projectDir
     println "projectLocation: ${projectLocation.get()}"
     verbose = true
     destinationDirectory = project.distsDirectory
