@@ -21,12 +21,15 @@ jobs:
       run:
         working-directory: /opt/sampleapp
     steps:
+      - name: Clean-up
+        run: rm -Rf *
       - name: Download the application artifact
         run: pwd && wget https://ec2-54-80-142-101.compute-1.amazonaws.com:8443/repository/PugChallengeMaven/com/progess/sportsapp/1.0.0/sportsapp-1.0.0.tar.gz --no-check-certificate
       - name: Extract the artifact
         run: tar -zxf sportsapp-1.0.0.tar.gz
+      - run: mkdir ./deploy/license  
       - name: Download the OpenEdge License file
-        run: wget -cO - https://ec2-54-80-142-101.compute-1.amazonaws.com:8443/repository/PugChallengeMaven/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > progress.cfg --no-check-certificate
+        run: wget -cO - https://ec2-54-80-142-101.compute-1.amazonaws.com:8443/repository/PugChallengeMaven/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > ./deploy/license/progress.cfg --no-check-certificate
 
 
       
