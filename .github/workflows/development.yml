@@ -12,7 +12,7 @@ jobs:
       - run: sh gradlew clean build
         working-directory: ./SportsApp    
       - name: upload zip file to nexus
-        run: curl -v -k -u admin:${{secrets.DOCKER_PWD}} --upload-file ./build/distributions/${{vars.SAMPLEAPP_NAME}}.tar.gz ${{vars.NEXUS_URL}}/com/progess/${{vars.SAMPLEAPP_NAME}}/${{vars.SAMPLEAPP_VERSION}}/${{var.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz
+        run: curl -v -k -u admin:${{secrets.DOCKER_PWD}} --upload-file ./build/distributions/${{vars.SAMPLEAPP_NAME}}.tar.gz ${{vars.NEXUS_URL}}/com/progess/${{vars.SAMPLEAPP_NAME}}/${{vars.SAMPLEAPP_VERSION}}/${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz
         working-directory: ./SportsApp
   deploy:
     name: Sample App Deploy
