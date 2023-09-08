@@ -12,7 +12,7 @@ jobs:
       - run: sh gradlew clean build
         working-directory: ./SportsApp    
       - name: upload zip file to nexus
-        run: curl -v -k -u admin:${{secrets.DOCKER_PWD}} --upload-file ./build/distributions/sportsApp.tar.gz ${{vars.NEXUS_URL}}/com/progess/sportsapp/1.0.0/sportsapp-1.0.0.tar.gz
+        run: curl -v -k -u admin:${{secrets.DOCKER_PWD}} --upload-file ./build/distributions/${{vars.SAMPLEAPP_NAME}}.tar.gz ${{vars.NEXUS_URL}}/com/progess/${{vars.SAMPLEAPP_NAME}}/${{vars.SAMPLEAPP_VERSION}}/${{var.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz
         working-directory: ./SportsApp
   deploy:
     name: Sample App Deploy
@@ -25,9 +25,9 @@ jobs:
       - name: Clean-up
         run: rm -Rf *
       - name: Download the application artifact
-        run: wget ${{vars.NEXUS_URL}}/com/progess/sportsapp/1.0.0/sportsapp-1.0.0.tar.gz --no-check-certificate
+        run: wget ${{vars.NEXUS_URL}}/com/progess/${{vars.SAMPLEAPP_NAME}}/${{vars.SAMPLEAPP_VERSION}}/${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz --no-check-certificate
       - name: Extract the artifact
-        run: tar -zxf sportsapp-1.0.0.tar.gz
+        run: tar -zxf ${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz
       - run: mkdir ./deploy/license  
       - name: Download the OpenEdge License file
         run: wget -cO - ${{vars.NEXUS_URL}}/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > ./deploy/license/progress.cfg --no-check-certificate
