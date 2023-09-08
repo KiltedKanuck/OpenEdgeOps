@@ -1,4 +1,4 @@
-name: OpenEdgeOps
+name: Development
 run-name: ${{ github.actor }} is compiling our Sample App 🚀
 on: [push]
 jobs:
