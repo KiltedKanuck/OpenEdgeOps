@@ -46,6 +46,7 @@ jobs:
     name: Reports 
     permissions: write-all
     needs: compile
+    if: always()
     runs-on: self-hosted
     steps:
     - name: Retrieve saved test report
