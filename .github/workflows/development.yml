@@ -47,12 +47,16 @@ jobs:
     needs: compile
     runs-on: self-hosted
     steps:
+    - name: Retrieve saved test report
+      uses: actions/download-artifact@v2
+      with:
+        name: test-results
+        path: test-results/test/results.xml
     - uses: dorny/test-reporter@v1
       with:
-        name: ABL Unit Tests              # Name of the check run which will be created
-        artifact: test-results
-        path: '*.xml'                     # Path to test results
-        reporter: java-junit              # Format of test results
+        name: ABL Unit Tests                  # Name of the check run which will be created
+        path: test-results/test/results.xml   # Path to test results
+        reporter: java-junit                  # Format of test results
 #  test:
 #    name: Test deploy of Sample App
 #    needs: deploy
