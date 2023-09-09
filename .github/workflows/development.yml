@@ -52,7 +52,7 @@ jobs:
       with:
         name: test-results
         path: test-results/test
-    - uses: dorny/test-reporter@v1
+    - uses: dorny/test-reporter@v1.6.0
       with:
         name: ABL Unit Tests                  # Name of the check run which will be created
         path: test-results/test/results.xml   # Path to test results
