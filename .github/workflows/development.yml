@@ -53,16 +53,16 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: 'trivy-results.sarif'
-      - name: Run Trivy vulnerability scanner for 'ec2-54-80-142-101.compute-1.amazonaws.com:9443/openedge-pasoe:12.8.0'
+      - name: Run Trivy vulnerability scanner for 'eclipse-temurin:17.0.3_7-jdk-centos7'
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'ec2-54-80-142-101.compute-1.amazonaws.com:9443/openedge-pasoe:12.8.0'
+          image-ref: 'eclipse-temurin:17.0.3_7-jdk-centos7 '
           format: 'sarif'
-          output: 'trivy-results-pasoe.sarif'
-      - name: Upload Trivy scan results to GitHub Security tab for 'ec2-54-80-142-101.compute-1.amazonaws.com:9443/openedge-pasoe:12.8.0'
+          output: 'trivy-results-jdk.sarif'
+      - name: Upload Trivy scan results to GitHub Security tab for 'eclipse-temurin:17.0.3_7-jdk-centos7'
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: 'trivy-results-pasoe.sarif'
+          sarif_file: 'trivy-results-jdk.sarif'
   report:
     name: Publish Reports 
     permissions: write-all
