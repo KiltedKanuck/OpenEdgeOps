@@ -88,10 +88,6 @@ jobs:
 #      - name: Check application life
 #        run: wget -cO - https://ec2-54-161-12-110.compute-1.amazonaws.com:8811/Sports/rest/SportsService/Customer > customer.json --no-check-certificate
         
-
-      
-
-
       
   
     
