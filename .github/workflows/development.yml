@@ -42,6 +42,16 @@ jobs:
       - name: Deploy new version of Sample App
         run: sudo sh deploy.sh
         working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'docker.io/sports:latest'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
   report:
     name: Publish Reports 
     permissions: write-all
