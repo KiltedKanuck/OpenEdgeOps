@@ -42,6 +42,17 @@ jobs:
       - name: Deploy new version of Sample App
         run: sudo sh deploy.sh
         working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
+  report:
+    permissions: write-all
+    needs: compile
+    runs-on: self-hosted
+    steps:
+    - uses: dorny/test-reporter@v1
+      with:
+        name: ABL Unit Tests              # Name of the check run which will be created
+        artifact: test-results
+        path: '*.xml'                     # Path to test results
+        reporter: java-junit              # Format of test results
 #  test:
 #    name: Test deploy of Sample App
 #    needs: deploy
