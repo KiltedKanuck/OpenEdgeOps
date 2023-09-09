@@ -3,6 +3,7 @@ run-name: ${{ github.actor }} is compiling our Sample App 🚀
 on: [push]
 jobs:
   compile:
+    permissions: write-all
     name: OpenEdge Compile job
     runs-on: self-hosted
     steps:
