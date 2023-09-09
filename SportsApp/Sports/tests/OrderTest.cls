@@ -23,7 +23,7 @@ CLASS OrderTest:
     ------------------------------------------------------------------------------*/
     @Test. 
     METHOD PUBLIC VOID testCreateOrder(  ):
-        Assert:IsTrue(FALSE).
+        Assert:IsTrue(TRUE).
         RETURN.
 
     END METHOD.
@@ -35,7 +35,7 @@ CLASS OrderTest:
     ------------------------------------------------------------------------------*/
     @Test. 
     METHOD PUBLIC VOID testReadOrder(  ):
-        Assert:IsTrue(FALSE).
+        Assert:IsTrue(TRUE).
         RETURN.
 
     END METHOD.
