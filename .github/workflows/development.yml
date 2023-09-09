@@ -18,7 +18,7 @@ jobs:
           name: ABL Unit Tests              # Name of the check run which will be created
           path: test-results/test/*.xml     # Path to test results
           reporter: jest-junit              # Format of test results
-        working-directory: ./SportsApp/Sports/build
+          working-directory: ./SportsApp/Sports/build
       - name: upload zip file to nexus
         run: curl -v -k -u admin:${{secrets.DOCKER_PWD}} --upload-file ./build/distributions/sportsApp.tar.gz ${{vars.NEXUS_URL}}/com/progess/${{vars.SAMPLEAPP_NAME}}/${{vars.SAMPLEAPP_VERSION}}/${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz
         working-directory: ./SportsApp
