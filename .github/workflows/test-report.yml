@@ -1,0 +1,17 @@
+name: 'Test Report'
+on:
+  workflow_run:
+    workflows: ['Development']                     # runs after CI workflow
+    types:
+      - completed
+jobs:
+  report:
+    permissions: write-all
+    runs-on: self-hosted
+    steps:
+    - uses: dorny/test-reporter@v1
+      with:
+        name: ABL Unit Tests              # Name of the check run which will be created
+        artifact: test-results
+        path: '*.xml'                     # Path to test results
+        reporter: java-junit              # Format of test results
