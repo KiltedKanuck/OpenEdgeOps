@@ -22,7 +22,8 @@ jobs:
         if: success() || failure()
         with:
           name: ABL Unit Tests              # Name of the check run which will be created
-          path: ./SportsApp/Sports/build/test-results/test/results.xml                 # Path to test results
+          artifact: test-results
+          path: '*.xml'                     # Path to test results
           reporter: java-junit              # Format of test results
       - name: upload zip file to nexus
         run: curl -v -k -u admin:${{secrets.DOCKER_PWD}} --upload-file ./build/distributions/sportsApp.tar.gz ${{vars.NEXUS_URL}}/com/progess/${{vars.SAMPLEAPP_NAME}}/${{vars.SAMPLEAPP_VERSION}}/${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz
