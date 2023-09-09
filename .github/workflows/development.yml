@@ -1,0 +1,57 @@
+name: Development
+run-name: ${{ github.actor }} is compiling our Sample App 🚀
+on: [push]
+jobs:
+  compile:
+    name: OpenEdge Compile job
+    runs-on: self-hosted
+    steps:
+      - name: Clean-up
+        run: rm -Rf *
+      - uses: actions/checkout@v3
+      - run: sh gradlew clean build
+        working-directory: ./SportsApp    
+      - name: upload zip file to nexus
+        run: curl -v -k -u admin:${{secrets.DOCKER_PWD}} --upload-file ./build/distributions/sportsApp.tar.gz ${{vars.NEXUS_URL}}/com/progess/${{vars.SAMPLEAPP_NAME}}/${{vars.SAMPLEAPP_VERSION}}/${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz
+        working-directory: ./SportsApp
+  deploy:
+    name: Sample App Deploy
+    needs: compile
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ${{vars.SAMPLEAPP_DIR}}
+    steps:
+      - name: Clean-up
+        run: rm -Rf *
+      - name: Download the application artifact
+        run: wget ${{vars.NEXUS_URL}}/com/progess/${{vars.SAMPLEAPP_NAME}}/${{vars.SAMPLEAPP_VERSION}}/${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz --no-check-certificate
+      - name: Extract the artifact
+        run: tar -zxf ${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz
+      - run: mkdir ./deploy/license  
+      - name: Download the OpenEdge License file
+        run: wget -cO - ${{vars.NEXUS_URL}}/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > ./deploy/license/progress.cfg --no-check-certificate
+      - name: Undeploy previous version of Sample App
+        run: sudo sh undeploy.sh
+        working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
+      - name: Deploy new version of Sample App
+        run: sudo sh deploy.sh
+        working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
+#  test:
+#    name: Test deploy of Sample App
+#    needs: deploy
+#    runs-on: self-hosted
+#    defaults:
+#      run:
+#        working-directory: /opt/sampleapp
+#    steps:
+#      - name: Check application life
+#        run: wget -cO - https://ec2-54-161-12-110.compute-1.amazonaws.com:8811/Sports/rest/SportsService/Customer > customer.json --no-check-certificate
+        
+
+      
+
+
+      
+  
+    
