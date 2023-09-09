@@ -30,29 +30,29 @@ jobs:
     steps:
       - name: Clean-up
         run: rm -Rf *
-      - name: Download the application artifact
-        run: wget ${{vars.NEXUS_URL}}/com/progess/${{vars.SAMPLEAPP_NAME}}/${{vars.SAMPLEAPP_VERSION}}/${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz --no-check-certificate
-      - name: Extract the artifact
-        run: tar -zxf ${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz
-      - run: mkdir ./deploy/license  
-      - name: Download the OpenEdge License file
-        run: wget -cO - ${{vars.NEXUS_URL}}/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > ./deploy/license/progress.cfg --no-check-certificate
-      - name: Undeploy previous version of Sample App
-        run: sudo sh undeploy.sh
-        working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
-      - name: Deploy new version of Sample App
-        run: sudo sh deploy.sh
-        working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
-      - name: Run Trivy vulnerability scanner for 'sports:latest'
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'docker.io/sports:latest'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-      - name: Upload Trivy scan results to GitHub Security tab for 'sports:latest'
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-results.sarif'
+      # - name: Download the application artifact
+      #   run: wget ${{vars.NEXUS_URL}}/com/progess/${{vars.SAMPLEAPP_NAME}}/${{vars.SAMPLEAPP_VERSION}}/${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz --no-check-certificate
+      # - name: Extract the artifact
+      #   run: tar -zxf ${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz
+      # - run: mkdir ./deploy/license  
+      # - name: Download the OpenEdge License file
+      #   run: wget -cO - ${{vars.NEXUS_URL}}/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > ./deploy/license/progress.cfg --no-check-certificate
+      # - name: Undeploy previous version of Sample App
+      #   run: sudo sh undeploy.sh
+      #   working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
+      # - name: Deploy new version of Sample App
+      #   run: sudo sh deploy.sh
+      #   working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
+      # - name: Run Trivy vulnerability scanner for 'sports:latest'
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: 'docker.io/sports:latest'
+      #     format: 'sarif'
+      #     output: 'trivy-results.sarif'
+      # - name: Upload Trivy scan results to GitHub Security tab for 'sports:latest'
+      #   uses: github/codeql-action/upload-sarif@v2
+      #   with:
+      #     sarif_file: 'trivy-results.sarif'
       - name: Run Trivy vulnerability scanner for 'eclipse-temurin:17.0.3_7-jdk-centos7'
         uses: aquasecurity/trivy-action@master
         with:
