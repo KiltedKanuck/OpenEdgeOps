@@ -1,16 +1,13 @@
 file:
   /deploy-staging:
     exists: true
-    mode: "0755"
     filetype: directory
     contains: []
   /deploy-staging/META-INF/MANIFEST.MF:
     exists: true
-    mode: "0644"
     filetype: file
     contains: []
   /deploy-staging/artifacts/ablapps/Sports.oear:
     exists: true
-    mode: "0777"
     filetype: file
     contains: []

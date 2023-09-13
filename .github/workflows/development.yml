@@ -55,7 +55,7 @@ jobs:
           files: ${{ github.workspace }}/Sports/docker/tests/*.xml
   deploy:
     name: Sample App Deploy
-    needs: compile
+    needs: build
     permissions: write-all
     runs-on: self-hosted
     defaults:
