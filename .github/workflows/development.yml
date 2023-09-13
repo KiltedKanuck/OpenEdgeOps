@@ -8,7 +8,7 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: ${{GITHUB_WORKSPACE}}/Sports
+        working-directory: ${{ github.workspace }}/Sports
     steps:
       - uses: actions/checkout@v3
       - name: Running Gradle build
@@ -21,7 +21,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         if: always()
         with:
-          files: ${{GITHUB_WORKSPACE}}/Sports/build/test-results/test/*.xml
+          files: ${{ github.workspace }}/Sports/build/test-results/test/*.xml
       # - uses: actions/upload-artifact@v2  # upload test results
       #   if: success() || failure()        # run this step even if previous step failed
       #   with:
@@ -37,7 +37,7 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: ${{GITHUB_WORKSPACE}}/Sports/docker
+        working-directory: ${{ github.workspace }}/Sports/docker
     steps:
       - name: Copy ABLApp archive ('.oear')
         run: cp -rf ./../build/distributions/ablapps/*.oear ./ablapps
@@ -52,7 +52,7 @@ jobs:
       - name: Publish Goss Test Results
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
-          files: ${{GITHUB_WORKSPACE}}/Sports/docker/tests/*.xml
+          files: ${{ github.workspace }}/Sports/docker/tests/*.xml
   deploy:
     name: Sample App Deploy
     needs: compile
