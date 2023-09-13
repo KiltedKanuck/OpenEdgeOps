@@ -19,7 +19,7 @@ println "Stage Environment: ${STAGE_ENVIRONMENT}"
 
 group = 'com.progress.openedge'
 version = "1.0.0"
-description = 'dependencymodule'
+description = 'Sports App'
 
 abl {
     if (STAGE_ENVIRONMENT == "dev") {
@@ -124,3 +124,19 @@ task packageABLApp(type: Oear) {
 packageABLApp.dependsOn "compileAbl-root-AppServer"
 packageABLApp.dependsOn "packageWebApp"
 assemble.dependsOn "packageABLApp"
+
+task dockerBuild(type:Exec) {
+    workingDir "${buildDir}/docker"
+    commandLine 'bash', '-c', "docker build --no-cache -t ${project.name.toLowerCase()}:latest ."
+    doFirst {
+        copy {
+            from "${project.distsDirectory.get()}/ablapps/"
+            into "${buildDir}/docker/ablapps"
+        }
+        copy {
+            from "Dockerfile"
+            into "${buildDir}/docker"
+        }
+    }
+}
+dockerBuild.dependsOn build
