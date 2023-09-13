@@ -93,33 +93,59 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: ${{vars.SAMPLEAPP_DIR}}
+        working-directory: ${{ github.workspace }}/deploy
     steps:
-      - name: Clean-up
-        run: rm -Rf *
-      - name: Download the application artifact
-        run: wget ${{vars.NEXUS_URL}}/com/progess/${{vars.SAMPLEAPP_NAME}}/${{vars.SAMPLEAPP_VERSION}}/${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz --no-check-certificate
-      - name: Extract the artifact
-        run: tar -zxf ${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz
-      - run: mkdir ./deploy/license  
+      - run: mkdir ./license  
       - name: Download the OpenEdge License file
-        run: wget -cO - ${{vars.NEXUS_URL}}/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > ./deploy/license/progress.cfg --no-check-certificate
+        run: wget -cO - ${{vars.NEXUS_URL}}/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > ./license/progress.cfg --no-check-certificate
       - name: Undeploy previous version of Sample App
         run: sudo sh undeploy.sh
-        working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
       - name: Deploy new version of Sample App
         run: sudo sh deploy.sh
-        working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
       - name: Run security scan for Sample App docker image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'docker.io/sports:latest'
+          image-ref: 'ec2-54-80-142-101.compute-1.amazonaws.com:9443/sports:latest'
           format: 'sarif'
           output: 'trivy-results.sarif'
       - name: Upload security scan report of Sample App docker image to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: 'trivy-results.sarif'
+  # deploy:
+  #   name: Sample App Deploy
+  #   needs: [build, buildwebui]
+  #   permissions: write-all
+  #   runs-on: self-hosted
+  #   defaults:
+  #     run:
+  #       working-directory: ${{vars.SAMPLEAPP_DIR}}
+  #   steps:
+  #     - name: Clean-up
+  #       run: rm -Rf *
+  #     - name: Download the application artifact
+  #       run: wget ${{vars.NEXUS_URL}}/com/progess/${{vars.SAMPLEAPP_NAME}}/${{vars.SAMPLEAPP_VERSION}}/${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz --no-check-certificate
+  #     - name: Extract the artifact
+  #       run: tar -zxf ${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz
+  #     - run: mkdir ./deploy/license  
+  #     - name: Download the OpenEdge License file
+  #       run: wget -cO - ${{vars.NEXUS_URL}}/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > ./deploy/license/progress.cfg --no-check-certificate
+  #     - name: Undeploy previous version of Sample App
+  #       run: sudo sh undeploy.sh
+  #       working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
+  #     - name: Deploy new version of Sample App
+  #       run: sudo sh deploy.sh
+  #       working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
+  #     - name: Run security scan for Sample App docker image
+  #       uses: aquasecurity/trivy-action@master
+  #       with:
+  #         image-ref: 'docker.io/sports:latest'
+  #         format: 'sarif'
+  #         output: 'trivy-results.sarif'
+  #     - name: Upload security scan report of Sample App docker image to GitHub Security tab
+  #       uses: github/codeql-action/upload-sarif@v2
+  #       with:
+  #         sarif_file: 'trivy-results.sarif'
   # report:
   #   name: Publish Reports 
   #   permissions: write-all

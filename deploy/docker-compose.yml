@@ -10,7 +10,7 @@ services:
           - DB_MINPORT=7664
           - DB_MAXPORT=7684
     webuiapp:
-        image: webui:latest
+        image: ec2-54-80-142-101.compute-1.amazonaws.com:9443/webui:latest
         volumes:
           - webui_dc:/webui
     web:
@@ -24,7 +24,7 @@ services:
         volumes:
           - jdk_dc:/opt/java/openjdk
     ablapp:
-        image: sports:latest
+        image: ec2-54-80-142-101.compute-1.amazonaws.com:9443/sports:latest
         volumes:
           - app_dc:/deploy-staging/artifacts
     pasoeinstance:
