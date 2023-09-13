@@ -102,6 +102,10 @@ jobs:
         run: sudo sh undeploy.sh
       - name: Deploy new version of Sample App
         run: sudo sh deploy.sh
+      - name: Test the app
+        run: echo "TODO"
+      - name: Undeploy the app and clean up resources
+        run: echo "TODO"
   securityscans:
     name: Scan Docker Images for Security Vulnerabilities
     needs: [build, buildwebui]
@@ -130,6 +134,13 @@ jobs:
         with:
           sarif_file: 'trivy-results-webui.sarif'
           category: webui-app-scan
+  stage:
+    name: Stage Artifacts and Docker Images for Release
+    needs: [deploy, securityscans]
+    runs-on: self-hosted
+    steps:
+      - name: Publish Docker Images to Release Docker Registry
+        run: echo "TODO"
   # deploy:
   #   name: Sample App Deploy
   #   needs: [build, buildwebui]
