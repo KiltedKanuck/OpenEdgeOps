@@ -55,7 +55,7 @@ jobs:
         with:
           files: ${{ github.workspace }}/Sports/docker/tests/*.xml
           check_name: Goss Test Results for Sports App
-   buildwebui:
+  buildwebui:
     name: Build Docker Image for Web UI App
     permissions: write-all
     runs-on: self-hosted
