@@ -21,7 +21,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         if: always()
         with:
-          files: /opt/actions-runner/_work/OpenEdgeOps/OpenEdgeOps/Sports/docker/build/test-results/test/results.xml
+          files: /opt/actions-runner/_work/OpenEdgeOps/OpenEdgeOps/Sports/build/test-results/test/results.xml
       # - uses: actions/upload-artifact@v2  # upload test results
       #   if: success() || failure()        # run this step even if previous step failed
       #   with:
