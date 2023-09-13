@@ -8,7 +8,7 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: ./Sports
+        working-directory: ${{GITHUB_WORKSPACE}}/Sports
     steps:
       - uses: actions/checkout@v3
       - name: Running Gradle build
@@ -21,7 +21,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         if: always()
         with:
-          files: /opt/actions-runner/_work/OpenEdgeOps/OpenEdgeOps/Sports/build/test-results/test/results.xml
+          files: ${{GITHUB_WORKSPACE}}/Sports/build/test-results/test/*.xml
       # - uses: actions/upload-artifact@v2  # upload test results
       #   if: success() || failure()        # run this step even if previous step failed
       #   with:
@@ -37,7 +37,7 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: ./Sports/docker
+        working-directory: ${{GITHUB_WORKSPACE}}/Sports/docker
     steps:
       - name: Copy ABLApp archive ('.oear')
         run: cp -rf ./../build/distributions/ablapps/*.oear ./ablapps
@@ -45,10 +45,14 @@ jobs:
         run: sh build.sh
       - name: Test Docker Image state - Goss
         run: sh test.sh
+      - name: Setup Python - needed by publish step
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
       - name: Publish Goss Test Results
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
-          files: tests/unitTestReport.xml
+          files: ${{GITHUB_WORKSPACE}}/Sports/docker/tests/*.xml
   deploy:
     name: Sample App Deploy
     needs: compile
