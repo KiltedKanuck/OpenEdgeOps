@@ -20,7 +20,7 @@ jobs:
       - name: Publish ABL Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
-          files: ./build/test-results/**/*.xml
+          files: build/test-results/test/results.xml
       # - uses: actions/upload-artifact@v2  # upload test results
       #   if: success() || failure()        # run this step even if previous step failed
       #   with:
@@ -47,7 +47,7 @@ jobs:
       - name: Publish Goss Test Results
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
-          files: ./unitTestReport.xml
+          files: tests/unitTestReport.xml
   deploy:
     name: Sample App Deploy
     needs: compile
