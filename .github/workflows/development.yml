@@ -95,7 +95,7 @@ jobs:
       run:
         working-directory: ${{ github.workspace }}/deploy
     steps:
-      - run: mkdir ./license  
+      - run: mkdir -p ./license  
       - name: Download the OpenEdge License file
         run: wget -cO - ${{vars.NEXUS_URL}}/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > ./license/progress.cfg --no-check-certificate
       - name: Undeploy previous version of Sample App
