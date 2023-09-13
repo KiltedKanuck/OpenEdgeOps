@@ -55,6 +55,11 @@ jobs:
         with:
           files: ${{ github.workspace }}/Sports/docker/tests/*.xml
           check_name: Goss Test Results for Sports App
+      - name: Push Docker Image to Develop Docker Registry
+        run: |
+          docker tag sports:latest ec2-54-80-142-101.compute-1.amazonaws.com:9443/sports:latest
+          docker login ec2-54-80-142-101.compute-1.amazonaws.com:9443 -u admin -p ${{ secrets.DOCKER_PWD }}
+          docker push ec2-54-80-142-101.compute-1.amazonaws.com:9443/sports:latest
   buildwebui:
     name: Build Docker Image for Web UI App
     permissions: write-all
@@ -76,6 +81,11 @@ jobs:
         with:
           files: ${{ github.workspace }}/webui/tests/*.xml
           check_name: Goss Test Results for Web UI App
+      - name: Push Docker Image to Develop Docker Registry
+        run: |
+          docker tag webui:latest ec2-54-80-142-101.compute-1.amazonaws.com:9443/webui:latest
+          docker login ec2-54-80-142-101.compute-1.amazonaws.com:9443 -u admin -p ${{ secrets.DOCKER_PWD }}
+          docker push ec2-54-80-142-101.compute-1.amazonaws.com:9443/webui:latest
   deploy:
     name: Sample App Deploy
     needs: [build, buildwebui]
