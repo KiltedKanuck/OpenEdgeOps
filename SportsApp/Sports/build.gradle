@@ -3,20 +3,23 @@
  *
  * This is a general purpose Gradle build.
  * Learn more about Gradle by exploring our samples at https://docs.gradle.org/7.3.3/samples
- * This project uses @Incubating APIs which are subject to change.
  */
-plugins {
-    id("progress.openedge.abl") version "2.2.1"
-    id("base")
+plugins { 
+    id "progress.openedge.abl" version "2.2.1" 
 }
 
+
 // Gather required variables
-def stgEnv = System.getProperty("STAGE_ENVIRONMENT")
-stgEnv = stgEnv != null ? stgEnv : System.getenv("STAGE_ENVIRONMENT")
-def STAGE_ENVIRONMENT = stgEnv != null ? stgEnv : "dev"
+def stageEnv = System.getProperty("STAGE_ENVIRONMENT")
+stageEnv = stageEnv != null ? stageEnv : System.getenv("STAGE_ENVIRONMENT")
+def STAGE_ENVIRONMENT = stageEnv != null ? stageEnv : "dev"
 
 println "DLC: ${abl.dlcHome}"
 println "Stage Environment: ${STAGE_ENVIRONMENT}"
+
+group = 'com.progress.openedge'
+version = "1.0.0"
+description = 'dependencymodule'
 
 abl {
     if (STAGE_ENVIRONMENT == "dev") {
@@ -41,17 +44,6 @@ if (STAGE_ENVIRONMENT == "dev") {
     compileAbl.dependsOn "createSports2020"
 }
 
-task testABLApp(type: ABLUnit){
-    source("tests")
-    include("**/*Suite.cls")
-    propath("tests", "AppServer")
-    outputDir = "${buildDir}/test-results/test"
-    arguments = [haltOnFailure: "true"]
-}
-if (STAGE_ENVIRONMENT == "dev") {
-    testABLApp.dependsOn "createSports2020"
-}
-
 tasks.named("compileAbl-root-AppServer"){
     rcodeDir = "${buildDir}/rcode/AppServer"
 }
@@ -60,16 +52,29 @@ tasks.named("compileAbl-root-PASOEContent-WEB-INF-openedge"){
     rcodeDir = "${buildDir}/rcode/PASOEContent/WEB-INF/openedge"
 }
 
-tasks.named("compileAbl-root-tests"){
+tasks.named("compileAbl-root-tests-AppServer"){
     rcodeDir = "${buildDir}/rcode/tests/AppServer"
 }
 
+task testABLApp(type: ABLUnit){
+    source("tests/AppServer")
+    include("**/*Suite.cls")
+    propath("tests/AppServer", "AppServer")
+    outputDir = "${buildDir}/test-results/test"
+    arguments = [haltOnFailure: "true"]
+}
+if (STAGE_ENVIRONMENT == "dev") {
+    testABLApp.dependsOn "createSports2020"
+}
+check.dependsOn "testABLApp"
+
 task packageWebApp(type: OEWar){
     webAppName = "Sports"
+    archiveVersion = "" // to ignore version in the archive name, otherwise has to be handled during deployment
+    verbose = true
     projectLocation = project.projectDir
     println "projectLocation: ${projectLocation.get()}"
-    verbose = true
-    destinationDirectory = project.distsDirectory
+    destinationDirectory = project.file "${project.distsDirectory.get()}/webapps"
 
     // exclude Sources from 'openedge' directory
     // (the ANT task used internally does it by default but added here anyway)
@@ -88,16 +93,17 @@ task packageWebApp(type: OEWar){
 }
 packageWebApp.dependsOn "compileAbl-root-PASOEContent-WEB-INF-openedge"
 
-task packageABLApp(type: Oear){
+task packageABLApp(type: Oear) {
     ablAppName = "Sports"
-    destinationDirectory = project.distsDirectory  //will create 'Sports.oear' file at this location
-    tlr { 
+    archiveVersion = ""
+    destinationDirectory = project.file "${project.distsDirectory.get()}/ablapps"  //will create 'Sports.oear' file at this location
+    tlr {
         from 'tlr'
         include '**/*.properties'
         include '**/*.xml'
     }
-    webapps { 
-        from project.distsDirectory
+    webapps {
+        from "${project.distsDirectory.get()}/webapps"
         include '**/*.war'
         include '**/*.zip'
     }
@@ -117,6 +123,4 @@ task packageABLApp(type: Oear){
 }
 packageABLApp.dependsOn "compileAbl-root-AppServer"
 packageABLApp.dependsOn "packageWebApp"
-
 assemble.dependsOn "packageABLApp"
-build.dependsOn "testABLApp"
