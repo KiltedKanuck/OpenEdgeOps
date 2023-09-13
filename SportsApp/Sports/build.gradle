@@ -6,25 +6,62 @@
  * This project uses @Incubating APIs which are subject to change.
  */
 plugins {
-    id("progress.openedge.abl-base") version "2.2.1"
+    id("progress.openedge.abl") version "2.2.1"
     id("base")
 }
 
 // Gather required variables
 def stgEnv = System.getProperty("STAGE_ENVIRONMENT")
-def STAGE_ENVIRONMENT = stgEnv != null ? stgEnv : System.getenv("STAGE_ENVIRONMENT")
+stgEnv = stgEnv != null ? stgEnv : System.getenv("STAGE_ENVIRONMENT")
+def STAGE_ENVIRONMENT = stgEnv != null ? stgEnv : "dev"
 
 println "DLC: ${abl.dlcHome}"
 println "Stage Environment: ${STAGE_ENVIRONMENT}"
 
+abl {
+    if (STAGE_ENVIRONMENT == "dev") {
+         dbConnection {
+            dbName="${buildDir}/db/sports2020/sports"
+            connectionParameters = "-1"
+        }
+    } else {
+        dbConnection {
+            parameterFile='conf/startup.pf'
+        }
+    }
+}
 
-// WEB App tasks
-task compileWebApp(type: ABLCompile){
-    source "PASOEContent/WEB-INF/openedge"
-    propath "PASOEContent/WEB-INF/openedge"
-    include "**/*.cls"
-    include "**/*.p"
+// ABL App tasks
+task createSports2020(type: CreateDB){
+	dbName = 'sports'
+	sourceDb = "${dlcHome}/sports2020"
+	outputDir = "${buildDir}/db/sports2020"
+}
+if (STAGE_ENVIRONMENT == "dev") {
+    compileAbl.dependsOn "createSports2020"
+}
+
+task testABLApp(type: ABLUnit){
+    source("tests")
+    include("**/*Suite.cls")
+    propath("tests", "AppServer")
+    outputDir = "${buildDir}/test-results/test"
+    arguments = [haltOnFailure: "true"]
+}
+if (STAGE_ENVIRONMENT == "dev") {
+    testABLApp.dependsOn "createSports2020"
+}
+
+tasks.named("compileAbl-root-AppServer"){
+    rcodeDir = "${buildDir}/rcode/AppServer"
+}
+
+tasks.named("compileAbl-root-PASOEContent-WEB-INF-openedge"){
     rcodeDir = "${buildDir}/rcode/PASOEContent/WEB-INF/openedge"
+}
+
+tasks.named("compileAbl-root-tests"){
+    rcodeDir = "${buildDir}/rcode/tests/AppServer"
 }
 
 task packageWebApp(type: OEWar){
@@ -34,16 +71,9 @@ task packageWebApp(type: OEWar){
     verbose = true
     destinationDirectory = project.distsDirectory
 
-    // exclude generated folders;
-    // because the ANT task used internally adds everything under the PASOEContent folder
-    // exclude "**/${buildDir.name}/**"
-    // exclude "**/output/**"
-
     // exclude Sources from 'openedge' directory
     // (the ANT task used internally does it by default but added here anyway)
-    exclude "PASOEContent/WEB-INF/openedge/*.cls"
-    exclude "PASOEContent/WEB-INF/openedge/*.p"
-    exclude "PASOEContent/WEB-INF/openedge/*.i"
+    exclude "PASOEContent/WEB-INF/openedge/*.(cls|p|i)"
 
     webInf {
         from("${buildDir}/rcode/PASOEContent/WEB-INF/openedge")
@@ -56,59 +86,7 @@ task packageWebApp(type: OEWar){
         // from ("PASOEContent/META-INF/MANIFEST.MF")
     }
 }
-packageWebApp.dependsOn "compileWebApp"
-
-// ABL App tasks
-task createSports2020(type: CreateDB){
-	dbName = 'sports'
-	sourceDb = "${dlcHome}/sports2020"
-	outputDir = "${buildDir}/db/sports2020"
-}
-
-task compileABLApp(type: ABLCompile){
-    source "AppServer"
-    propath "AppServer"
-    include "**/*.cls"
-    include "**/*.p"
-    rcodeDir = "${buildDir}/rcode/AppServer"
-
-    if (STAGE_ENVIRONMENT == "prod" || STAGE_ENVIRONMENT == "staging") {
-        dbConnection {
-            parameterFile='conf/startup.pf'
-        }
-    } else {
-        dbConnection {
-            dbName="${buildDir}/db/sports2020/sports"
-            connectionParameters = "-1"
-        }
-    }
-
-}
-if (STAGE_ENVIRONMENT != "prod" || STAGE_ENVIRONMENT == "staging") {
-    compileABLApp.dependsOn "createSports2020"
-}
-
-task testABLApp(type: ABLUnit){
-    source("tests")
-    include("**/*Suite.cls")
-    propath("tests", "AppServer")
-    outputDir = "${buildDir}/test-results/test"
-    arguments = [haltOnFailure: "true"]
-
-    if (STAGE_ENVIRONMENT == "prod" || STAGE_ENVIRONMENT == "staging") {
-        dbConnection {
-            parameterFile='conf/startup.pf'
-        }
-    } else {
-        dbConnection {
-            dbName="${buildDir}/db/sports2020/sports"
-            connectionParameters = "-1"
-        }
-    }
-}
-if (STAGE_ENVIRONMENT != "prod" || STAGE_ENVIRONMENT == "staging") {
-    testABLApp.dependsOn "createSports2020"
-}
+packageWebApp.dependsOn "compileAbl-root-PASOEContent-WEB-INF-openedge"
 
 task packageABLApp(type: Oear){
     ablAppName = "Sports"
@@ -137,7 +115,7 @@ task packageABLApp(type: Oear){
         // from ("conf/MANIFEST.MF")
     }
 }
-packageABLApp.dependsOn "compileABLApp"
+packageABLApp.dependsOn "compileAbl-root-AppServer"
 packageABLApp.dependsOn "packageWebApp"
 
 assemble.dependsOn "packageABLApp"
