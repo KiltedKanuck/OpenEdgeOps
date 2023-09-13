@@ -22,6 +22,7 @@ jobs:
         if: always()
         with:
           files: ${{ github.workspace }}/Sports/build/test-results/test/*.xml
+          check_name: ABL Unit Test Results for Sports App
       # - uses: actions/upload-artifact@v2  # upload test results
       #   if: success() || failure()        # run this step even if previous step failed
       #   with:
@@ -53,6 +54,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
           files: ${{ github.workspace }}/Sports/docker/tests/*.xml
+          check_name: Goss Test Results for Sports App
   deploy:
     name: Sample App Deploy
     needs: build
