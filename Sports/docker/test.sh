@@ -9,4 +9,3 @@ cd ./tests
 export GOSS_OPTS="--format junit"
 echo "Running Goss Tests"
 dgoss run -it sports:latest /bin/sh > unitTestReport.xml
-echo "Running Goss Tests Complete"
