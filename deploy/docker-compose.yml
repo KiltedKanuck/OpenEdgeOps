@@ -15,6 +15,8 @@ services:
           - webui_dc:/webui
     web:
         image: nginx
+        depends_on:
+          - webuiapp
         ports:
         - "8080:80"
         volumes:
