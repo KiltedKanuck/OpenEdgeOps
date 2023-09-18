@@ -11,8 +11,12 @@ jobs:
         working-directory: ${{ github.workspace }}/Sports
     steps:
       - uses: actions/checkout@v3
-      - name: Running Gradle build
-        run: sh gradlew clean build
+      - name: Pull Dev PASOE Docker Image
+        run: |
+          docker login ec2-54-80-142-101.compute-1.amazonaws.com:9443 -u admin -p ${{ secrets.DOCKER_PWD }}
+          docker pull ec2-54-80-142-101.compute-1.amazonaws.com:9443/openedge-dev-pasoe:12.8.0
+      - name: Running Gradle build in a Container
+        run: docker run --rm -it -v ./:/psc/wrk/Sports/ -e APP_LOCATION=/psc/wrk/Sports ec2-54-80-142-101.compute-1.amazonaws.com:9443/openedge-dev-pasoe:12.8.0
       - name: Setup Python - needed by publish step
         uses: actions/setup-python@v4
         with:
