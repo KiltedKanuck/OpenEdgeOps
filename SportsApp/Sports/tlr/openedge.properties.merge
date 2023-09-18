@@ -1,2 +1,0 @@
-[AppServer.SessMgr.${oepas-app}]
-    agentStartupParam=-T "${CATALINA_BASE}/temp" -pf ${CATALINA_BASE}/ablapps/${oepas-app}/conf/startup.pf

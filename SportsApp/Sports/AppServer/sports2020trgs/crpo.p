@@ -1,4 +1,0 @@
-TRIGGER PROCEDURE FOR CREATE OF PurchaseOrder.
-
-ASSIGN PurchaseOrder.PONum = NEXT-VALUE(NextPONum).
-   
