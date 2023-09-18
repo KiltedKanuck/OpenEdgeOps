@@ -4,6 +4,7 @@
  * This is a general purpose Gradle build.
  * Learn more about Gradle by exploring our samples at https://docs.gradle.org/7.3.3/samples
  */
+
 plugins { 
     id "progress.openedge.abl" version "2.2.1" 
 }
@@ -20,11 +21,9 @@ group = 'com.progress.openedge'
 version = "1.0.0"
 description = 'Sports App'
 
-print "Name ${name}"
-
 abl {
     if (STAGE_ENVIRONMENT == "dev") {
-         dbConnection {
+        dbConnection {
             dbName="${buildDir}/db/sports2020/sports"
             connectionParameters = "-1"
         }
@@ -37,9 +36,9 @@ abl {
 
 // ABL App tasks
 task createSports2020(type: CreateDB){
-	dbName = 'sports'
-	sourceDb = "${dlcHome}/sports2020"
-	outputDir = "${buildDir}/db/sports2020"
+    dbName = 'sports'
+    sourceDb = "${dlcHome}/sports2020"
+    outputDir = "${buildDir}/db/sports2020"
 }
 if (STAGE_ENVIRONMENT == "dev") {
     compileAbl.dependsOn "createSports2020"
@@ -67,7 +66,8 @@ task testABLApp(type: ABLUnit){
 if (STAGE_ENVIRONMENT == "dev") {
     testABLApp.dependsOn "createSports2020"
 }
-check.dependsOn "testABLApp"
+check.dependsOn "testABLApp", "compileAbl"
+
 
 task packageWebApp(type: OEWar){
     webAppName = "Sports"
@@ -93,6 +93,7 @@ task packageWebApp(type: OEWar){
     }
 }
 packageWebApp.dependsOn "compileAbl-root-PASOEContent-WEB-INF-openedge"
+assemble.dependsOn "packageWebApp"
 
 task packageABLApp(type: Oear) {
     ablAppName = "Sports"
@@ -125,19 +126,3 @@ task packageABLApp(type: Oear) {
 packageABLApp.dependsOn "compileAbl-root-AppServer"
 packageABLApp.dependsOn "packageWebApp"
 assemble.dependsOn "packageABLApp"
-
-// task dockerBuild(type:Exec) {
-//     workingDir "${buildDir}/docker"
-//     commandLine 'bash', '-c', "export IMAGE_NAME=${project.name.toLowerCase()} && sh build.sh"
-//     doFirst {
-//         copy {
-//             from "${project.distsDirectory.get()}/ablapps/"
-//             into "${buildDir}/docker/ablapps"
-//         }
-//         copy {
-//             from "docker"
-//             into "${buildDir}/docker"
-//         }
-//     }
-// }
-// dockerBuild.dependsOn build
