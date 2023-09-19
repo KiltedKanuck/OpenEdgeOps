@@ -6,6 +6,9 @@ npm install
 
 node --version
 npm --version
+
+echo "Waiting for the application to come up."
+sleep 45s
 npm run test:rest
 
 echo "Starting test of Services of the Sample Sports App Complete!"
