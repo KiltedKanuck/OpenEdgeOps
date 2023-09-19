@@ -109,6 +109,10 @@ jobs:
       - name: Test the app
         run: sh test-app-image.sh
         working-directory: ${{ github.workspace }}/test-app-image
+      - name: Setup Python - needed by publish step
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
       - name: Publish Sample Sports App Test Results
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
