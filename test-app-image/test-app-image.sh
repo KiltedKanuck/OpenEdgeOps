@@ -1,12 +1,11 @@
-echo "##teamcity[testStarted name='Test_MasterSample_DataObject']"
+echo "Starting test of Services of the Sample Sports App!"
 
 # Run Test using NodeJS
-# export PATH=$PATH:/tools/linuxx86_64/nodejs/node-v6.9.1/bin
-nvm use 6.9.1
+export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v6.9.1/bin/
 npm install
 
 node --version
 npm --version
 npm run test:rest
 
-echo "##teamcity[testFinished name='Test_MasterSample_DataObject']"
+echo "Starting test of Services of the Sample Sports App Complete!"
