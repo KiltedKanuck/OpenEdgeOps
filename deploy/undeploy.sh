@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # env vars
-export DOCKER_REPO_URL=${DOCKER_REPO_URL}
-export OE_VERSION=${OE_VERSION}
-export APP_NAME=${APP_NAME}
-export APP_VERSION=${APP_VERSION}
-export APP_GROUP=${APP_GROUP}
+# export DOCKER_REPO_URL=${DOCKER_REPO_URL}
+# export OE_VERSION=${OE_VERSION}
+# export APP_NAME=${APP_NAME}
+# export APP_VERSION=${APP_VERSION}
+# export APP_GROUP=${APP_GROUP}
 
 # undeploy
 PAS_INSTANCE_NAME=oepas1
