@@ -128,6 +128,7 @@ jobs:
         with:
           files: ${{ github.workspace }}/test-app-image/*.xml
           check_name: Test Results - Sports App Services
+          action_fail: true
       - name: Undeploy the app and clean up resources
         run: echo "TODO"
   securityscans:
