@@ -164,4 +164,10 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Publish Docker Images to Release Docker Registry
-        run: echo "TODO"
+        run: |
+          docker login ${{ vars.DOCKER_REPO_URL }} -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PWD }}
+          docker tag ${{ vars.DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/webui:latest ${{ vars.DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/webui:latest-tested
+          docker push ${{ vars.DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/webui:latest-tested
+          docker tag ${{ vars.DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/${{ vars.APP_NAME }}:${{ vars.APP_VERSION }} ${{ vars.DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/${{ vars.APP_NAME }}:${{ vars.APP_VERSION }}-tested
+          docker push ${{ vars.DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/${{ vars.APP_NAME }}:${{ vars.APP_VERSION }}-tested
+
