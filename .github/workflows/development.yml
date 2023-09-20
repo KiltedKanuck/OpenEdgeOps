@@ -59,9 +59,9 @@ jobs:
           check_name: Goss Test Results for Sports App
       - name: Push Docker Image to Develop Docker Registry
         run: |
-          docker tag ${{ vars.APP_NAME }}:${{ vars.APP_VERSION }} ${{ DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/${{ vars.APP_NAME }}:${{ vars.APP_VERSION }}
-          docker login ${{ DOCKER_REPO_URL }} -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PWD }}
-          docker push ${{ DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/${{ vars.APP_NAME }}:${{ vars.APP_VERSION }}
+          docker tag ${{ vars.APP_NAME }}:${{ vars.APP_VERSION }} ${{ vars.DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/${{ vars.APP_NAME }}:${{ vars.APP_VERSION }}
+          docker login ${{ vars.DOCKER_REPO_URL }} -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PWD }}
+          docker push ${{ vars.DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/${{ vars.APP_NAME }}:${{ vars.APP_VERSION }}
   buildwebui:
     name: Build Docker Image for Web UI App
     permissions: write-all
