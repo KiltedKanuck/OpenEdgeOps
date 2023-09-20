@@ -170,7 +170,7 @@ CLASS Customer INHERITS BusinessEntity:
                 END.
 
             iCount = 0.
-            REPEAT WHILE NOT hQuery:QUERY-OFF-END AND iCount < iMaxRows:
+            REPEAT WHILE NOT hQuery:QUERY-OFF-END AND iCount < 5:
                 hQuery:GET-NEXT () NO-ERROR.
                 IF AVAILABLE Customer THEN 
                 DO:
