@@ -99,11 +99,23 @@ jobs:
     steps:
       - run: mkdir -p ./license  
       - name: Download the OpenEdge License file
-        run: wget -cO - ${{vars.NEXUS_URL}}/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > ./license/progress.cfg --no-check-certificate
+        run: wget -cO - ${{vars.NEXUS_URL}}/OpenEdge/linux/${{vars.OE_VERSION}}/linux-${{vars.OE_VERSION}}-license.cfg > ./license/progress.cfg --no-check-certificate
       - name: Undeploy previous version of Sample App
         run: sudo sh undeploy.sh
+        env:
+          DOCKER_REPO_URL: ${{ vars.DOCKER_REPO_URL }}
+          OE_VERSION: ${{ vars.OE_VERSION }}
+          APP_NAME: ${{ vars.APP_NAME }}
+          APP_VERSION: ${{ vars.APP_VERSION }}
+          APP_GROUP: ${{ vars.APP_GROUP }}
       - name: Deploy new version of Sample App
         run: sudo sh deploy.sh
+        env:
+          DOCKER_REPO_URL: ${{ vars.DOCKER_REPO_URL }}
+          OE_VERSION: ${{ vars.OE_VERSION }}
+          APP_NAME: ${{ vars.APP_NAME }}
+          APP_VERSION: ${{ vars.APP_VERSION }}
+          APP_GROUP: ${{ vars.APP_GROUP }}
       - name: Test the app
         run: sh test-app-image.sh
         working-directory: ${{ github.workspace }}/test-app-image
@@ -153,75 +165,3 @@ jobs:
     steps:
       - name: Publish Docker Images to Release Docker Registry
         run: echo "TODO"
-  # deploy:
-  #   name: Sample App Deploy
-  #   needs: [build, buildwebui]
-  #   permissions: write-all
-  #   runs-on: self-hosted
-  #   defaults:
-  #     run:
-  #       working-directory: ${{vars.SAMPLEAPP_DIR}}
-  #   steps:
-  #     - name: Clean-up
-  #       run: rm -Rf *
-  #     - name: Download the application artifact
-  #       run: wget ${{vars.NEXUS_URL}}/com/progess/${{vars.SAMPLEAPP_NAME}}/${{vars.SAMPLEAPP_VERSION}}/${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz --no-check-certificate
-  #     - name: Extract the artifact
-  #       run: tar -zxf ${{vars.SAMPLEAPP_NAME}}-${{vars.SAMPLEAPP_VERSION}}.tar.gz
-  #     - run: mkdir ./deploy/license  
-  #     - name: Download the OpenEdge License file
-  #       run: wget -cO - ${{vars.NEXUS_URL}}/OpenEdge/linux/12.8.0/linux-12.8.0-license.cfg > ./deploy/license/progress.cfg --no-check-certificate
-  #     - name: Undeploy previous version of Sample App
-  #       run: sudo sh undeploy.sh
-  #       working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
-  #     - name: Deploy new version of Sample App
-  #       run: sudo sh deploy.sh
-  #       working-directory: ${{vars.SAMPLEAPP_DIR}}/deploy
-  #     - name: Run security scan for Sample App docker image
-  #       uses: aquasecurity/trivy-action@master
-  #       with:
-  #         image-ref: 'docker.io/sports:latest'
-  #         format: 'sarif'
-  #         output: 'trivy-results.sarif'
-  #     - name: Upload security scan report of Sample App docker image to GitHub Security tab
-  #       uses: github/codeql-action/upload-sarif@v2
-  #       with:
-  #         sarif_file: 'trivy-results.sarif'
-  # report:
-  #   name: Publish Reports 
-  #   permissions: write-all
-  #   needs: compile
-  #   if: always()
-  #   runs-on: self-hosted
-  #   steps:
-  #   - name: Retrieve saved test report
-  #     uses: actions/download-artifact@v2
-  #     with:
-  #       name: test-results
-  #       path: test-results/test
-  #   # - uses: dorny/test-reporter@v1.6.0
-  #   #   with:
-  #   #     name: ABL Unit Test Results           # Name of the check run which will be created
-  #   #     path: test-results/test/results.xml   # Path to test results
-  #   #     reporter: java-junit                  # Format of test results
-  #   - name: Setup Python
-  #     uses: actions/setup-python@v4
-  #     with:
-  #       python-version: 3.8
-  #   - name: Publish Test Results
-  #     uses: EnricoMi/publish-unit-test-result-action/composite@v2
-  #     with:
-  #       files: test-results/**/*.xml
-#  test:
-#    name: Test deploy of Sample App
-#    needs: deploy
-#    runs-on: self-hosted
-#    defaults:
-#      run:
-#        working-directory: /opt/sampleapp
-#    steps:
-#      - name: Check application life
-#        run: wget -cO - https://ec2-54-161-12-110.compute-1.amazonaws.com:8811/Sports/rest/SportsService/Customer > customer.json --no-check-certificate
-        
-      
-  
