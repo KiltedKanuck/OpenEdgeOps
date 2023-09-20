@@ -101,7 +101,7 @@ jobs:
       - name: Download the OpenEdge License file
         run: wget -cO - ${{vars.NEXUS_URL}}/OpenEdge/linux/${{vars.OE_VERSION}}/linux-${{vars.OE_VERSION}}-license.cfg > ./license/progress.cfg --no-check-certificate
       - name: Undeploy previous version of Sample App
-        run: sudo sh undeploy.sh
+        run: sh undeploy.sh
         env:
           DOCKER_REPO_URL: ${{ vars.DOCKER_REPO_URL }}
           OE_VERSION: ${{ vars.OE_VERSION }}
@@ -109,7 +109,7 @@ jobs:
           APP_VERSION: ${{ vars.APP_VERSION }}
           APP_GROUP: ${{ vars.APP_GROUP }}
       - name: Deploy new version of Sample App
-        run: sudo sh deploy.sh
+        run: sh deploy.sh
         env:
           DOCKER_REPO_URL: ${{ vars.DOCKER_REPO_URL }}
           OE_VERSION: ${{ vars.OE_VERSION }}
