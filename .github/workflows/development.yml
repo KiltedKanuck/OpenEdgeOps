@@ -127,7 +127,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
           files: ${{ github.workspace }}/test-app-image/*.xml
-          check_name: Test - Results for Sports App Services
+          check_name: Test Results - Sports App Services
       - name: Undeploy the app and clean up resources
         run: echo "TODO"
   securityscans:
