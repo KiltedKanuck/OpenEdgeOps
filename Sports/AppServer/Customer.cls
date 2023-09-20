@@ -113,7 +113,7 @@ CLASS Customer INHERITS BusinessEntity:
 
         jsonParser  = NEW ObjectModelParser().
         jsonObject  = CAST(jsonParser:Parse(filter), jsonObject).
-        iMaxRows    = jsonObject:GetInteger("top")  NO-ERROR.
+        iMaxRows    = 5.
         iSkipRows   = jsonObject:GetInteger("skip") NO-ERROR.
         ablFilter   = jsonObject:GetCharacter("ablFilter") NO-ERROR.
         id          = jsonObject:GetCharacter("id") NO-ERROR.
@@ -170,7 +170,7 @@ CLASS Customer INHERITS BusinessEntity:
                 END.
 
             iCount = 0.
-            REPEAT WHILE NOT hQuery:QUERY-OFF-END AND iCount < 5:
+            REPEAT WHILE NOT hQuery:QUERY-OFF-END AND iCount < iMaxRows:
                 hQuery:GET-NEXT () NO-ERROR.
                 IF AVAILABLE Customer THEN 
                 DO:
