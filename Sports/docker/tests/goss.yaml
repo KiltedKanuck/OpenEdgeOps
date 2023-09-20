@@ -1,0 +1,13 @@
+file:
+  /deploy-staging:
+    exists: true
+    filetype: directory
+    contains: []
+  /deploy-staging/META-INF/MANIFEST.MF:
+    exists: true
+    filetype: file
+    contains: []
+  /deploy-staging/artifacts/ablapps/Sports.oear:
+    exists: true
+    filetype: file
+    contains: []
