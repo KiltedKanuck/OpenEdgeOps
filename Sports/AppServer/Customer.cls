@@ -48,7 +48,14 @@ CLASS Customer INHERITS BusinessEntity:
         INPUT filter AS CHARACTER, 
         OUTPUT DATASET dsCustomer):
 
-       
+        IF filter BEGINS "~{" THEN
+            THIS-OBJECT:JFPFillMethod (INPUT filter).
+        ELSE 
+        DO:
+            BUFFER ttCustomer:HANDLE:BATCH-SIZE = 0.
+            BUFFER ttCustomer:SET-CALLBACK ("AFTER-ROW-FILL", "AddIdField").
+            SUPER:ReadData(filter).
+        END.
     END METHOD.
 
     /* Other CUD and Submit operation methods */
@@ -88,6 +95,106 @@ CLASS Customer INHERITS BusinessEntity:
     
 
     METHOD PRIVATE VOID JFPFillMethod(INPUT filter AS CHARACTER):
+
+        DEFINE VARIABLE jsonParser     AS ObjectModelParser NO-UNDO.
+        DEFINE VARIABLE jsonObject     AS JsonObject        NO-UNDO.
+        DEFINE VARIABLE cWhere         AS CHARACTER         NO-UNDO.
+        DEFINE VARIABLE hQuery         AS HANDLE            NO-UNDO.
+        DEFINE VARIABLE lUseReposition AS LOGICAL           NO-UNDO.
+        DEFINE VARIABLE iCount         AS INTEGER           NO-UNDO.
+        DEFINE VARIABLE ablFilter      AS CHARACTER         NO-UNDO.
+        DEFINE VARIABLE id             AS CHARACTER         INITIAL ? NO-UNDO.
+        DEFINE VARIABLE iMaxRows       AS INTEGER           INITIAL ? NO-UNDO.
+        DEFINE VARIABLE iSkipRows      AS INTEGER           INITIAL ? NO-UNDO.
+        DEFINE VARIABLE cOrderBy       AS CHARACTER         INITIAL "" NO-UNDO.
+
+        /* purge any existing data */
+        EMPTY TEMP-TABLE ttCustomer.
+
+        jsonParser  = NEW ObjectModelParser().
+        jsonObject  = CAST(jsonParser:Parse(filter), jsonObject).
+        iMaxRows    = jsonObject:GetInteger("top")  NO-ERROR.
+        iSkipRows   = jsonObject:GetInteger("skip") NO-ERROR.
+        ablFilter   = jsonObject:GetCharacter("ablFilter") NO-ERROR.
+        id          = jsonObject:GetCharacter("id") NO-ERROR.
+        cOrderBy    = jsonObject:GetCharacter("orderBy") NO-ERROR.
+        cWhere      = "WHERE " + ablFilter NO-ERROR.
+
+        IF cOrderBy > "" THEN 
+        DO:
+            cOrderBy = REPLACE(cOrderBy, ",", " by ").
+            cOrderBy = "by " + cOrderBy + " ".
+            /* NOTE: id and seq fields should be removed from 
+               cWhere and cOrderBy */
+            cOrderBy = REPLACE(cOrderBy, "by id desc", "").
+            cOrderBy = REPLACE(cOrderBy, "by id ", "").
+            cOrderBy = REPLACE(cOrderBy, "by seq desc", "").
+            cOrderBy = REPLACE(cOrderBy, "by seq ", "").
+        END.
+
+        lUseReposition = iSkipRows <> ?.
+
+        IF iMaxRows <> ? AND iMaxRows > 0 THEN 
+        DO:
+            BUFFER ttCustomer:HANDLE:BATCH-SIZE = iMaxRows.
+        END.
+        ELSE 
+        DO:
+            IF id > "" THEN
+                BUFFER ttCustomer:HANDLE:BATCH-SIZE = 1.
+            ELSE                                 
+                BUFFER ttCustomer:HANDLE:BATCH-SIZE = 0.
+        END.                        
+
+        BUFFER ttCustomer:ATTACH-DATA-SOURCE(DATA-SOURCE srcCustomer:HANDLE).
+
+        IF cOrderBy = ? THEN cOrderBy = "".
+        cWhere = IF cWhere > "" THEN (cWhere + " " + cOrderBy) 
+        ELSE ("WHERE " + cOrderBy).
+        DATA-SOURCE srcCustomer:FILL-WHERE-STRING = cWhere.
+
+        IF lUseReposition THEN 
+        DO:
+            hQuery = DATA-SOURCE srcCustomer:QUERY.
+            hQuery:QUERY-OPEN.
+
+            IF id > "" AND id <> "?" THEN 
+            DO:
+                hQuery:REPOSITION-TO-ROWID(TO-ROWID(id)).
+            END.
+            ELSE IF iSkipRows <> ? AND iSkipRows > 0 THEN 
+                DO:
+                    hQuery:REPOSITION-TO-ROW(iSkipRows).
+                    IF NOT AVAILABLE Customer THEN
+                        hQuery:GET-NEXT() NO-ERROR.
+                END.
+
+            iCount = 0.
+            REPEAT WHILE NOT hQuery:QUERY-OFF-END AND iCount < iMaxRows:
+                hQuery:GET-NEXT () NO-ERROR.
+                IF AVAILABLE Customer THEN 
+                DO:
+                    CREATE ttCustomer.
+                    BUFFER-COPY Customer TO ttCustomer.
+                    ASSIGN  
+                        ttCustomer.id  = STRING(ROWID(Customer))
+                        iSeq           = iSeq + 1
+                        ttCustomer.seq = iSeq.
+                END.
+                iCount = iCount + 1.
+            END.
+        END.
+        ELSE 
+        DO:
+            IF id > "" THEN DATA-SOURCE srcCustomer:RESTART-ROWID(1) 
+                = TO-ROWID ((id)).
+            BUFFER ttCustomer:SET-CALLBACK ("AFTER-ROW-FILL", "AddIdField").
+            DATASET dsCustomer:FILL().
+        END.
+
+        FINALLY:
+            BUFFER ttCustomer:DETACH-DATA-SOURCE().
+        END FINALLY. 
   
     END METHOD.
     
@@ -101,7 +208,7 @@ CLASS Customer INHERITS BusinessEntity:
     @openapi.openedge.export(type="REST", useReturnValue="false", writeDataSetBeforeImage="false").
     @progress.service.resourceMapping(type="REST", operation="invoke", URI="/count?filter=~{filter~}", alias="", mediaType="application/json").
     METHOD PUBLIC VOID count( INPUT filter AS CHARACTER, OUTPUT numRecs AS INTEGER):
-        DEFINE VARIABLE jsonParser AS ObjectModelParser NO-UNDO.
+        DEFINE VARIABLE jParser AS ObjectModelParser NO-UNDO.
         DEFINE VARIABLE jsonObject AS JsonObject        NO-UNDO.
         DEFINE VARIABLE ablFilter  AS CHARACTER         NO-UNDO.
         DEFINE VARIABLE cWhere     AS CHARACTER         NO-UNDO.
@@ -111,8 +218,8 @@ CLASS Customer INHERITS BusinessEntity:
             cWhere = filter.
         ELSE IF filter BEGINS "~{" THEN 
             DO:
-                jsonParser  = NEW ObjectModelParser().
-                jsonObject  = CAST(jsonParser:Parse(filter), jsonObject).
+                jParser  = NEW ObjectModelParser().
+                jsonObject  = CAST(jParser:Parse(filter), jsonObject).
                 ablFilter   = jsonObject:GetCharacter("ablFilter") NO-ERROR.
                 cWhere      = "WHERE " + ablFilter.
             END.
