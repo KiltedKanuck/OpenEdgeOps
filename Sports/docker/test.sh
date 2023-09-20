@@ -8,4 +8,4 @@ cd ./tests
 # export GOSS_PATH=./goss
 export GOSS_OPTS="--format junit"
 echo "Running Goss Tests"
-dgoss run -it sports:latest /bin/sh > unitTestReport.xml
+dgoss run -it ${APP_NAME}:${APP_VERSION} /bin/sh > unitTestReport.xml

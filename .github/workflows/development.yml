@@ -40,8 +40,14 @@ jobs:
         run: cp -rf ./../build/distributions/ablapps/*.oear ./ablapps
       - name: Docker build
         run: sh build.sh
+        env:
+          APP_NAME: ${{ vars.APP_NAME }}
+          APP_VERSION: ${{ vars.APP_VERSION }}
       - name: Test Docker Image state - Goss
         run: sh test.sh
+        env:
+          APP_NAME: ${{ vars.APP_NAME }}
+          APP_VERSION: ${{ vars.APP_VERSION }}
       - name: Setup Python - needed by publish step
         uses: actions/setup-python@v4
         with:
@@ -53,9 +59,9 @@ jobs:
           check_name: Goss Test Results for Sports App
       - name: Push Docker Image to Develop Docker Registry
         run: |
-          docker tag sports:latest ec2-54-80-142-101.compute-1.amazonaws.com:9443/sports:latest
-          docker login ec2-54-80-142-101.compute-1.amazonaws.com:9443 -u admin -p ${{ secrets.DOCKER_PWD }}
-          docker push ec2-54-80-142-101.compute-1.amazonaws.com:9443/sports:latest
+          docker tag ${{ vars.APP_NAME }}:${{ vars.APP_VERSION }} ${{ DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/${{ vars.APP_NAME }}:${{ vars.APP_VERSION }}
+          docker login ${{ DOCKER_REPO_URL }} -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PWD }}
+          docker push ${{ DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/${{ vars.APP_NAME }}:${{ vars.APP_VERSION }}
   buildwebui:
     name: Build Docker Image for Web UI App
     permissions: write-all

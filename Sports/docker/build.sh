@@ -1,5 +1,5 @@
 #!/bin/bash
 
 echo "Building Docker Image"
-docker build -t sports:latest . --no-cache
+docker build -t ${APP_NAME}:${APP_VERSION} . --no-cache
 echo "Building Docker Image Complete!"
