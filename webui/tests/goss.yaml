@@ -1,0 +1,21 @@
+file:
+  /webui:
+    exists: true
+    filetype: directory
+    contains: []
+  /webui/META-INF/MANIFEST.MF:
+    exists: true
+    filetype: file
+    contains: []
+  /webui/grid.js:
+    exists: true
+    filetype: file
+    contains: []
+  /webui/index.html:
+    exists: true
+    filetype: file
+    contains: []
+  /webui/progress.all.js:
+    exists: true
+    filetype: file
+    contains: []
