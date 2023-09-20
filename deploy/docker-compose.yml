@@ -26,7 +26,7 @@ services:
         volumes:
           - jdk_dc:/opt/java/openjdk
     ablapp:
-        image: ${DOCKER_REPO_URL}:9443/${APP_GROUP}/${APP_NAME}:${APP_VERSION}
+        image: ${DOCKER_REPO_URL}/${APP_GROUP}/${APP_NAME}:${APP_VERSION}
         volumes:
           - app_dc:/deploy-staging/artifacts
     pasoeinstance:
