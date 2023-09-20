@@ -48,14 +48,7 @@ CLASS Customer INHERITS BusinessEntity:
         INPUT filter AS CHARACTER, 
         OUTPUT DATASET dsCustomer):
 
-        IF filter BEGINS "~{" THEN
-            THIS-OBJECT:JFPFillMethod (INPUT filter).
-        ELSE 
-        DO:
-            BUFFER ttCustomer:HANDLE:BATCH-SIZE = 0.
-            BUFFER ttCustomer:SET-CALLBACK ("AFTER-ROW-FILL", "AddIdField").
-            SUPER:ReadData(filter).
-        END.
+       
     END METHOD.
 
     /* Other CUD and Submit operation methods */
