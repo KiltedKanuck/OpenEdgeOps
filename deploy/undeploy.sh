@@ -9,4 +9,4 @@ export APP_GROUP=${APP_GROUP}
 
 # undeploy
 PAS_INSTANCE_NAME=oepas1
-docker-compose -p ${PAS_INSTANCE_NAME} down -v --verbose
+docker-compose  --verbose -p ${PAS_INSTANCE_NAME} down -v
