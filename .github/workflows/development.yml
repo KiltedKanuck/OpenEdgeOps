@@ -26,7 +26,7 @@ jobs:
         if: always()
         with:
           files: ${{ github.workspace }}/Sports/build/test-results/test/*.xml
-          check_name: Test - ABL Unit Test Results for Sports App
+          check_name: Test Results - ABL Unit tests for Sports App
   build:
     name: Build Docker Image for Sports App
     needs: compile
@@ -56,7 +56,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
           files: ${{ github.workspace }}/Sports/docker/tests/*.xml
-          check_name: Goss Test Results for Sports App
+          check_name: Test Results - Goss tests for Sports App
       - name: Push Docker Image to Develop Docker Registry
         run: |
           docker tag ${{ vars.APP_NAME }}:${{ vars.APP_VERSION }} ${{ vars.DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/${{ vars.APP_NAME }}:${{ vars.APP_VERSION }}
@@ -82,12 +82,12 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
           files: ${{ github.workspace }}/webui/tests/*.xml
-          check_name: Goss Test Results for Web UI App
+          check_name: Test Results - Goss tests for Web UI App
       - name: Push Docker Image to Develop Docker Registry
         run: |
-          docker tag webui:latest ec2-54-80-142-101.compute-1.amazonaws.com:9443/webui:latest
-          docker login ec2-54-80-142-101.compute-1.amazonaws.com:9443 -u admin -p ${{ secrets.DOCKER_PWD }}
-          docker push ec2-54-80-142-101.compute-1.amazonaws.com:9443/webui:latest
+          docker tag webui:latest ${{ vars.DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/webui:latest
+          docker login ${{ vars.DOCKER_REPO_URL }} -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PWD }}
+          docker push ${{ vars.DOCKER_REPO_URL }}/${{ vars.APP_GROUP }}/webui:latest
   deploy:
     name: Test Sample App Deploy
     needs: [build, buildwebui]
