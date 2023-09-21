@@ -12,4 +12,4 @@ jobs:
       - name: "Run Sigrid CI" 
         env:
           SIGRID_CI_TOKEN: "${{ secrets.SIGRID_CI_TOKEN }}"
-        run: "./sigridci/sigridci/sigridci.py --customer 'Progress Software' --system 'Sample App' --source ."
+        run: "./sigridci/sigridci/sigridci.py --customer 'Progress Software' --system 'SampleApp' --source ."
