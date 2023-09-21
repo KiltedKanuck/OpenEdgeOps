@@ -208,7 +208,7 @@ CLASS Customer INHERITS BusinessEntity:
     @openapi.openedge.export(type="REST", useReturnValue="false", writeDataSetBeforeImage="false").
     @progress.service.resourceMapping(type="REST", operation="invoke", URI="/count?filter=~{filter~}", alias="", mediaType="application/json").
     METHOD PUBLIC VOID count( INPUT filter AS CHARACTER, OUTPUT numRecs AS INTEGER):
-        DEFINE VARIABLE jParser AS ObjectModelParser NO-UNDO.
+        DEFINE VARIABLE jsonParser AS ObjectModelParser NO-UNDO.
         DEFINE VARIABLE jsonObject AS JsonObject        NO-UNDO.
         DEFINE VARIABLE ablFilter  AS CHARACTER         NO-UNDO.
         DEFINE VARIABLE cWhere     AS CHARACTER         NO-UNDO.
@@ -218,8 +218,8 @@ CLASS Customer INHERITS BusinessEntity:
             cWhere = filter.
         ELSE IF filter BEGINS "~{" THEN 
             DO:
-                jParser  = NEW ObjectModelParser().
-                jsonObject  = CAST(jParser:Parse(filter), jsonObject).
+                jsonParser  = NEW ObjectModelParser().
+                jsonObject  = CAST(jsonParser:Parse(filter), jsonObject).
                 ablFilter   = jsonObject:GetCharacter("ablFilter") NO-ERROR.
                 cWhere      = "WHERE " + ablFilter.
             END.
