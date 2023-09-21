@@ -12,4 +12,4 @@ echo "APP_GROUP=${APP_GROUP}"
 
 # deploy
 PAS_INSTANCE_NAME=oepas1
-docker-compose --verbose -p ${PAS_INSTANCE_NAME} up -d
+docker-compose -p ${PAS_INSTANCE_NAME} up -d
