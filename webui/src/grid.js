@@ -4,7 +4,11 @@
 
 $(function () {
     'use strict';
+<<<<<<< HEAD
     var serviceURI = "https://ec2-3-84-2-121.compute-1.amazonaws.com:8811/Sports";
+=======
+    var serviceURI = "https://<instance-public-ip>:8811/Sports";
+>>>>>>> 2dc36163c2e39a60013d4a4da933f744805c5f4a
     var catalogURI = serviceURI + "/static/SportsService.json";
 
     function createGrid() {
